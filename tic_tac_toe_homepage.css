@@ -1,0 +1,73 @@
+header {
+  background-color: black;
+  left: 0;
+  top: 0;
+  width: 100%;
+  display: inline-block;
+  text-align: center;
+}
+
+
+body{
+  background-color: #58AEC9;
+}
+
+main {
+  max-width: 800px;
+  margin: auto;
+  padding: 0px 0px;
+  font-family: Apple Chancery;
+  font-size: 200%;
+  text-align: center;
+}
+
+h1{
+  font-family: impact;
+  font-size: 500%;
+  text-align: center;
+  background: -webkit-linear-gradient(#0099ff, white);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.button {
+  padding: 20px 40px 20px;
+  font-size: 21px;
+  background-color: #F36C8C;
+  font-weight: bold;
+  text-shadow: 1px 1px #F36C8C;
+  color: #ffffff;
+  border-radius: 100px;
+  -moz-border-radius: 100px;
+  -webkit-border-radius: 100px;
+  border: 1px solid #F36C8C;
+  cursor: pointer;
+}
+
+footer {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  color:black;
+  text-align: right;
+  margin-top: 60px; 
+}
+
+#gameScreen, #message{
+  display: none;
+}
+
+.gameGrid{
+  display: grid;
+  grid-template-columns: auto auto auto;
+} 
+
+.tile{
+  background-color: white;
+  border: 3px solid rgba(0, 0, 0, 100);
+  padding: 20px;
+  font-size: 30px;
+  text-align: center;
+  min-height: 40px;
+}
