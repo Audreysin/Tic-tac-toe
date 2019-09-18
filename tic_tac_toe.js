@@ -189,7 +189,6 @@ function isGridFull() {
 		for (col = 0; col <= 2; col++) {
 			if ((grid[row])[col] === " ") {
 				return false;
-				break;
 			}
 		}
 	}
