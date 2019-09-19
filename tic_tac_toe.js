@@ -216,3 +216,16 @@ function newGame() {
 
 // ***********************************************************************************
 
+// Further feature to be implemented: Allowing the user to play with the computer
+/*
+pseudocode for the algorithm to find the best next move for the computer
+
+check if each row. column and diagonal if there are 2 identical symbols.
+	if so, preferentially choose the one corresponding to the computer's.
+ 	return position of the empty spot for the computer to make next move
+
+ Find all empty spots in the grid and add the entries to an array.
+ Randomly choses one empty spot
+
+ var item = array[Math.floor(Math.random()*array.length)];
+*/
