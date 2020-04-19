@@ -216,14 +216,11 @@ function newGame() {
 
 // ***********************************************************************************
 
-<<<<<<< HEAD
 /*
 pseudocode
-=======
 // Further feature to be implemented: Allowing the user to play with the computer
 /*
 pseudocode for the algorithm to find the best next move for the computer
->>>>>>> c870881d34a4c42abe4bec760f2a40aec423da23
 
 check if each row. column and diagonal if there are 2 identical symbols.
 	if so, preferentially choose the one corresponding to the computer's.
@@ -234,8 +231,5 @@ check if each row. column and diagonal if there are 2 identical symbols.
 
  var item = array[Math.floor(Math.random()*array.length)];
 */
-<<<<<<< HEAD
 
 // let the user be x by default and the computer be o
-=======
->>>>>>> c870881d34a4c42abe4bec760f2a40aec423da23

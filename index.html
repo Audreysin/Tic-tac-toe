@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" type="text/css" href="tic_tac_toe_homepage.css">
+  <script type="text/javascript" src = "tic_tac_toe.js">
+  </script>
+  <title>Tic Tac Toe</title>
+</head>
+<body>
+	<header>
+		<h1>TIC TAC TOE</h1>
+	</header>
+
+	<main>
+		<section id="homeScreen">
+			<h2>Welcome!</h2>
+
+			<label>Player X:</label>
+			<input type="text" id="X" placeholder="Enter your name" />
+			<br>
+			<br>
+			<label>Player O:</label>
+			<input type="text" id="O" placeholder="Enter your name" />
+			<br>
+			<br>
+			<input type="button" value="Play!" id="playButton" class="button" onclick="getName();" />
+		</section>
+
+		<section id="gameScreen">
+			<h3><span id="playerX"></span> : <span id="Xscore">0</span>&nbsp; &nbsp; &nbsp; &nbsp;<span id="playerO"></span> : <span id="Oscore">0</span></h3>
+
+			<p><span id="player"></span>'s turn</p>
+			<p id = "message"></p>
+
+			<div class="gameGrid">
+				<div id="r1c1" class="tile" onclick="newMove(0,0);"> </div>
+				<div id="r1c2" class="tile" onclick="newMove(0,1);"> </div>
+				<div id="r1c3" class="tile" onclick="newMove(0,2);"> </div>
+				<div id="r2c1" class="tile" onclick="newMove(1,0);"> </div>
+				<div id="r2c2" class="tile" onclick="newMove(1,1);"> </div>
+				<div id="r2c3" class="tile" onclick="newMove(1,2);"> </div>
+				<div id="r3c1" class="tile" onclick="newMove(2,0);"> </div>
+				<div id="r3c2" class="tile" onclick="newMove(2,1);"> </div>
+				<div id="r3c3" class="tile" onclick="newMove(2,2);"> </div>
+			</div>
+			<br>
+			<input type="button" value="Undo" id="undoButton" class="button" onclick="undo();" />
+			<input type="button" value="Reset" id="resetButton" class="button" onclick="reset();" />
+			<input type="button" value="Restart" id="newGameButton" class="button" onclick="newGame();" />
+
+		</section>
+
+	</main>
+
+	<footer>Copyright Audrey Sin Fai Lam</footer>
+
+</body>
+</html>
