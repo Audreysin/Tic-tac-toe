@@ -66,7 +66,6 @@ function startGame() {
 	document.getElementById("Xscore").innerHTML = 0;
 	document.getElementById("Oscore").innerHTML = 0;
 	if (currentPlayer === ai && play_with_computer) {
-		console.log("Start call ai move")
 		aiMove();
 	}
 }
@@ -76,6 +75,20 @@ function makeMove(row, column) {
 	var position = ("r"+(row+1).toString()+"c"+(column+1)).toString();
 	document.getElementById(position).innerHTML = currentPlayer;
 	moveHistory.unshift([row,column]);
+	let cell = document.getElementById(position);
+	let counter = 0;
+	let blinkColor = {
+		"X": "red",
+		"O": "green"
+	};
+	let blinker = setInterval(function() { 
+			cell.style.color = (cell.style.color == 'black' ? blinkColor[currentPlayer] : 'black');
+			counter++;
+			if (counter >= 6) {
+				cell.style.color = 'black';
+				clearInterval(blinker);
+			}
+		}, 300);
 }
 
 function victoryProcedure() {
@@ -117,14 +130,12 @@ let scores = {
 function bestMove() {
 	let bestScore = -Infinity;
 	let move = null;
-	console.log("find best move")
 	for (let row = 0; row < 3; row++) {
 	  for (let col = 0; col < 3; col++) {
 		// Is the spot available?
 		if (grid[row][col] === " ") {
 		  grid[row][col] = ai;
 		  let score = minimax(grid, false);
-		//   console.log([row, col]);
 		  grid[row][col] = " ";
 		  if (score > bestScore) {
 			bestScore = score;
@@ -198,7 +209,6 @@ function aiMove() {
 		// No change in current player
 	} else {
 		switchPlayer();
-		console.log("Second call")
 		if (isGridFull()) {
 			tieProcedure();
 		}
@@ -215,8 +225,6 @@ function aiMove() {
 // 			 0 <= column <= 2
 // side-effects: Mutates the global variables grid, currentPlayer, moveHistory
 function newMove(row,column) {
-	console.log("Human move at ")
-	console.log([row, column])
 	if ((grid[row])[column] === " ") {
 		makeMove(row, column);
 		if (winnerCheck()) {
@@ -224,14 +232,12 @@ function newMove(row,column) {
 			// No change in current player
 		} else {
 			switchPlayer();
-			console.log("first call")
 			if (isGridFull()) {
 				tieProcedure();
 				return
 			}
 			if (play_with_computer) {
-				console.log("Aimove called after human played")
-				aiMove()
+				setTimeout(function() {aiMove()}, 2000);
 			}
 		}
 	} else {
@@ -256,8 +262,6 @@ function switchPlayer(){
 	} else {
 		alert("Something is wrong with the player!");
 	}
-	console.log("Player switched to " + currentPlayer);
-
 }
 
 // winnerCheck() Returns True if there is a winner. Otherwise, returns False
@@ -307,13 +311,16 @@ function undo() {
 		(grid[row])[column] = " ";
 		gridUpdater();
 		switchPlayer();
-		if (play_with_computer) {
+		if (play_with_computer && currentPlayer === ai) {
 			undo();
 		}
 	} else {
 		document.getElementById("message").innerHTML = "No previous move";
 		document.getElementById("message").style.display = "block";
 		setTimeout(function () {document.getElementById("message").style.display = "none"}, 2000);
+		if (play_with_computer && currentPlayer === ai) {
+			aiMove();
+		}
 	}
 }
 
@@ -330,7 +337,6 @@ function reset() {
 		moveHistory.shift();
 	}
 	if (play_with_computer && currentPlayer===ai) {
-		console.log("Reset call aimove")
 		aiMove();
 
 	}
