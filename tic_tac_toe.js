@@ -3,8 +3,11 @@ Purpose: Tic tac toe game program for 2 players allowing the players to make mov
          reset the grid and start a new game
 */
 
-var player_x = null
-var player_o = null
+var player_x = null;
+var player_o = null;
+let play_with_computer = false;
+let ai;
+let human;
 
 var grid = 
 [[" "," "," "],
@@ -38,6 +41,170 @@ function getName() {
 	document.getElementById("Oscore").innerHTML = 0;
 }
 
+function startGame() {
+	
+	play_with_computer = true;
+	player_x = document.getElementById("X").value;
+	player_o = document.getElementById("O").value;
+	if (player_x === "") {
+		player_x = "Computer";
+		if(player_o === "") {
+			player_o = "Human";
+		}
+		ai = x;
+		human = o;
+	} else {
+		player_o = "Computer";
+		ai = o;
+		human = x;
+	}
+	document.getElementById("homeScreen").style.display = "none";
+	document.getElementById("gameScreen").style.display = "block";
+	document.getElementById("playerX").innerHTML = player_x;
+	document.getElementById("playerO").innerHTML = player_o;
+	document.getElementById("player").innerHTML = player_x;
+	document.getElementById("Xscore").innerHTML = 0;
+	document.getElementById("Oscore").innerHTML = 0;
+	if (currentPlayer === ai && play_with_computer) {
+		console.log("Start call ai move")
+		aiMove();
+	}
+}
+
+function makeMove(row, column) {
+	(grid[row])[column] = currentPlayer;
+	var position = ("r"+(row+1).toString()+"c"+(column+1)).toString();
+	document.getElementById(position).innerHTML = currentPlayer;
+	moveHistory.unshift([row,column]);
+}
+
+function victoryProcedure() {
+	score = parseInt(document.getElementById(currentPlayer+"score").innerHTML, 10) + 1;
+	document.getElementById(currentPlayer+"score").innerHTML = score;
+	let winnerName = null;
+	if (currentPlayer === "X") {
+		winnerName = player_x;
+	} else if (currentPlayer === "O") {
+		winnerName = player_o;
+	} else {
+		winnerName = "Unknown";
+	}
+	document.getElementById("message").innerHTML = "Congratulation " + winnerName + "!";
+	document.getElementById("message").style.display = "block";
+	setTimeout(
+		function () {
+			document.getElementById("message").style.display = "none";
+			reset();
+		}, 3000);
+}
+
+function tieProcedure(){
+	document.getElementById("message").innerHTML = "It's a tie! Game being reset...";
+	document.getElementById("message").style.display = "block";
+	setTimeout(
+		function () {
+			document.getElementById("message").style.display = "none";
+			reset();
+		}, 3000);
+}
+
+let scores = {
+	"ai": 10,
+	"human": -10,
+	"tie": 0
+};
+
+function bestMove() {
+	let bestScore = -Infinity;
+	let move = null;
+	console.log("find best move")
+	for (let row = 0; row < 3; row++) {
+	  for (let col = 0; col < 3; col++) {
+		// Is the spot available?
+		if (grid[row][col] === " ") {
+		  grid[row][col] = ai;
+		  let score = minimax(grid, false);
+		//   console.log([row, col]);
+		  grid[row][col] = " ";
+		  if (score > bestScore) {
+			bestScore = score;
+			move = [row, col];
+		  }
+		}
+	  }
+	}
+	if (move === null) {
+		alert("The board is full!");
+	}
+	return move;
+}
+
+function getWinner(isMaximizing) {
+	if (winnerCheck()) {
+		if (isMaximizing) {
+			return "human";
+		} else {
+			return "ai";
+		}
+	} else if (isGridFull()) {
+		return "tie";
+	} else {
+		return null;
+	}
+}
+
+function minimax(board, isMaximizing) {
+	let result = getWinner(isMaximizing);
+	if (result !== null) {
+	  return scores[result];
+	}
+
+	if (isMaximizing) {
+		let bestScore = -Infinity;
+		for (let i = 0; i < 3; i++) {
+		  for (let j = 0; j < 3; j++) {
+			// Is the spot available?
+			if (board[i][j] === ' ') {
+			  board[i][j] = ai;
+			  let score = minimax(board, false);
+			  board[i][j] = ' ';
+			  bestScore = Math.max(score, bestScore);
+			}
+		  }
+		}
+		return bestScore;
+	} else {
+		let bestScore = Infinity;
+		for (let i = 0; i < 3; i++) {
+		  for (let j = 0; j < 3; j++) {
+			// Is the spot available?
+			if (board[i][j] === ' ') {
+			  board[i][j] = human;
+			  let score = minimax(board, true);
+			  board[i][j] = ' ';
+			  bestScore = Math.min(score, bestScore);
+			}
+		  }
+		}
+		return bestScore;
+	}
+}
+
+function aiMove() {
+	const nextAIMove = bestMove();
+	makeMove(nextAIMove[0], nextAIMove[1]);
+	if (winnerCheck()) {
+		victoryProcedure();
+		// No change in current player
+	} else {
+		switchPlayer();
+		console.log("Second call")
+		if (isGridFull()) {
+			tieProcedure();
+		}
+	}
+}
+
 // newMove (row,column) If the move is valid (i.e. if position (row, column) is empty),
 //.         inserts "X" or "O" in the grid, updates the grid on the webpage and checks for winner.
 //		    If there is a winner, the score of the winner is updated on the webpage and 
@@ -48,48 +215,25 @@ function getName() {
 // 			 0 <= column <= 2
 // side-effects: Mutates the global variables grid, currentPlayer, moveHistory
 function newMove(row,column) {
+	console.log("Human move at ")
+	console.log([row, column])
 	if ((grid[row])[column] === " ") {
-		(grid[row])[column] = currentPlayer;
-		var position = ("r"+(row+1).toString()+"c"+(column+1)).toString();
-		
-		document.getElementById(position).innerHTML = currentPlayer;
-		moveHistory.unshift([row,column]);
-
-		var isWinner = winnerCheck();
-
-		if (isWinner) {
-			score = parseInt(document.getElementById(currentPlayer+"score").innerHTML, 10) + 1;
-			document.getElementById(currentPlayer+"score").innerHTML = score;
-			var winnerName = null;
-			if (currentPlayer === "X") {
-				winnerName = player_x;
-			} else if (currentPlayer === "O") {
-				winnerName = player_o;
-			} else {
-				winnerName = "Unknown";
-			}
-			document.getElementById("message").innerHTML = "Congratulation " + winnerName + "!";
-			document.getElementById("message").style.display = "block";
-			setTimeout(
-				function () {
-					document.getElementById("message").style.display = "none";
-					reset();
-				}, 3000);
+		makeMove(row, column);
+		if (winnerCheck()) {
+			victoryProcedure();
 			// No change in current player
 		} else {
 			switchPlayer();
+			console.log("first call")
 			if (isGridFull()) {
-				document.getElementById("message").innerHTML = "No more valid moves. Game being reset...";
-				document.getElementById("message").style.display = "block";
-				setTimeout(
-					function () {
-						document.getElementById("message").style.display = "none";
-						reset();
-					}, 3000);
-
+				tieProcedure();
+				return
+			}
+			if (play_with_computer) {
+				console.log("Aimove called after human played")
+				aiMove()
 			}
 		}
-		return
 	} else {
 		document.getElementById("message").innerHTML = "This move is invalid. Try again!";
 		document.getElementById("message").style.display = "block";
@@ -112,6 +256,7 @@ function switchPlayer(){
 	} else {
 		alert("Something is wrong with the player!");
 	}
+	console.log("Player switched to " + currentPlayer);
 
 }
 
@@ -162,6 +307,9 @@ function undo() {
 		(grid[row])[column] = " ";
 		gridUpdater();
 		switchPlayer();
+		if (play_with_computer) {
+			undo();
+		}
 	} else {
 		document.getElementById("message").innerHTML = "No previous move";
 		document.getElementById("message").style.display = "block";
@@ -181,12 +329,17 @@ function reset() {
 	while (moveHistory.length > 0) {
 		moveHistory.shift();
 	}
+	if (play_with_computer && currentPlayer===ai) {
+		console.log("Reset call aimove")
+		aiMove();
+
+	}
 }
 
 // isGridFull() Returns true if grid is "full". Otherwise, returns false
 function isGridFull() {
-	for (row = 0; row <= 2; row++){
-		for (col = 0; col <= 2; col++) {
+	for (let row = 0; row <= 2; row++){
+		for (let col = 0; col <= 2; col++) {
 			if ((grid[row])[col] === " ") {
 				return false;
 			}
@@ -209,27 +362,10 @@ function newGame() {
 	player_x = null;
 	player_o = null;
 	currentPlayer = x;
+	play_with_computer = false;
+	ai = null;
+	human = null;
 	reset();
 	document.getElementById("homeScreen").style.display = "block";
 	document.getElementById("gameScreen").style.display = "none";
 }
-
-// ***********************************************************************************
-
-/*
-pseudocode
-// Further feature to be implemented: Allowing the user to play with the computer
-/*
-pseudocode for the algorithm to find the best next move for the computer
-
-check if each row. column and diagonal if there are 2 identical symbols.
-	if so, preferentially choose the one corresponding to the computer's.
- 	return position of the empty spot for the computer to make next move
-
- Find all empty spots in the grid and add the entries to an array.
- Randomly choses one empty spot
-
- var item = array[Math.floor(Math.random()*array.length)];
-*/
-
-// let the user be x by default and the computer be o
